@@ -12,14 +12,14 @@ export interface IUser {
 
 export interface IUserModel {
   users: IUser[];
-  setUsers: Action<IUserModel, IUser>;
+  setUsers: Action<IUserModel, string>;
 }
 
 export const userModel: IUserModel = persist(
   {
     users: [],
-    setUsers: action((state, user) => {
-      state.users.push(user);
+    setUsers: action((state, name) => {
+      state.users.push({ name, id: `user-${+new Date()}` });
     })
   },
   {
