@@ -19,7 +19,7 @@ export const userModel: IUserModel = persist(
   {
     users: [],
     setUsers: action((state, name) => {
-      state.users.push({ name, id: `user-${+new Date()}` });
+      state.users.push({ name, id: `user-${new Date().getTime()}` });
     })
   },
   {
