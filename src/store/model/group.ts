@@ -9,14 +9,14 @@ export interface IGroup {
 
 export interface IGroupModel {
   groups: IGroup[];
-  setGroups: Action<IGroupModel, IGroup>;
+  setGroups: Action<IGroupModel, Omit<IGroup, "id">>;
 }
 
 export const groupModel: IGroupModel = persist(
   {
-    groups: [{ name: "dummy-group", id: "abc", users: [] }],
-    setGroups: action((state, user) => {
-      state.groups.push(user);
+    groups: [],
+    setGroups: action((state, group) => {
+      state.groups.push({ id: `group-${new Date().getTime()}`, ...group });
     })
   },
   {
