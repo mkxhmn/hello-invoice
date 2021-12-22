@@ -1,11 +1,16 @@
 import { useStoreActions, useStoreState } from "../../store/hooks";
 import { useFormik } from "formik";
 import { schema } from "./schema";
-import { useMemo } from "react";
+import { ChangeEvent, FunctionComponent, useMemo } from "react";
 import { matchSorter } from "match-sorter";
 import { useDebounce } from "use-debounce";
 
-export const UserSelection = () => {
+interface IUserSelection {
+  users: string[];
+  handleUser: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const UserSelection: FunctionComponent<IUserSelection> = props => {
   const users = useStoreState(state => state.user.users);
   const setUsers = useStoreActions(actions => actions.user.setUsers);
 
@@ -60,6 +65,9 @@ export const UserSelection = () => {
               id={user.id}
               value={user.id}
               className="w-4 h-4"
+              checked={props.users.includes(user.id)}
+              //@ts-ignore
+              onClick={props.handleUser}
             />
             <label
               htmlFor="vehicle1"

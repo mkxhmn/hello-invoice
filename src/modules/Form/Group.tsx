@@ -1,19 +1,27 @@
 import { useFormik } from "formik";
-import { FunctionComponent } from "react";
+import { ChangeEvent, FunctionComponent } from "react";
 import { UserSelection } from "./UserSelection";
+import { IGroup } from "../../store/model/group";
 
 export const GroupForm: FunctionComponent = () => {
-  const formik = useFormik({
+  const formik = useFormik<Omit<IGroup, "id">>({
     initialValues: {
-      group: {
-        name: ""
-      },
-      participant: []
+      name: "",
+      users: []
     },
     onSubmit: values => {
       console.log(values);
     }
   });
+
+  const handleUser = (event: ChangeEvent<HTMLInputElement>) => {
+    formik.setFieldValue(
+      "users",
+      event.target.checked
+        ? [...formik.values.users, event.target.value]
+        : formik.values.users.filter(userId => userId !== event.target.value)
+    );
+  };
 
   return (
     <form>
@@ -31,7 +39,7 @@ export const GroupForm: FunctionComponent = () => {
           placeholder="Name"
         />
       </div>
-      <UserSelection />
+      <UserSelection users={formik.values.users} handleUser={handleUser} />
     </form>
   );
 };
