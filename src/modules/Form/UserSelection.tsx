@@ -1,6 +1,9 @@
 import { useStoreActions, useStoreState } from "../../store/hooks";
 import { useFormik } from "formik";
 import { schema } from "./schema";
+import { useMemo } from "react";
+import { matchSorter } from "match-sorter";
+import { useDebounce } from "use-debounce";
 
 export const UserSelection = () => {
   const users = useStoreState(state => state.user.users);
@@ -8,8 +11,9 @@ export const UserSelection = () => {
 
   const formik = useFormik<{ name: string }>({
     initialValues: { name: "" },
-    onSubmit: values => {
+    onSubmit: (values, { resetForm }) => {
       setUsers(values.name);
+      resetForm();
     },
     validationSchema: schema
   });
@@ -17,6 +21,16 @@ export const UserSelection = () => {
   const handleAddUser = () => {
     formik.handleSubmit();
   };
+
+  const [userInput] = useDebounce(formik.values.name, 250);
+
+  const recommendation = useMemo(() => {
+    if (!userInput) {
+      return users;
+    }
+
+    return matchSorter(users, userInput, { keys: ["name"] });
+  }, [users, userInput]);
 
   return (
     <div className="mb-4">
@@ -33,12 +47,13 @@ export const UserSelection = () => {
         placeholder="Participant"
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        value={formik.values.name}
       />
       {formik.errors.name && (
         <span className="text-sm text-red-400">{formik.errors.name}</span>
       )}
       <div className="border-gray-800 border-2">
-        {users.map(user => (
+        {recommendation.map(user => (
           <div key={user.id} className="mt-2 align-center flex">
             <input
               type="checkbox"
@@ -54,9 +69,15 @@ export const UserSelection = () => {
             </label>
           </div>
         ))}
-        <button className="text-blue-400" type="button" onClick={handleAddUser}>
-          add user
-        </button>
+        {!recommendation.length && (
+          <button
+            className="text-blue-400"
+            type="button"
+            onClick={handleAddUser}
+          >
+            add user
+          </button>
+        )}
       </div>
     </div>
   );
