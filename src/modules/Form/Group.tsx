@@ -20,7 +20,13 @@ export const GroupForm: FunctionComponent = () => {
       const result = setGroups(values);
 
       //@ts-ignore
-      await router.replace(`/group/${result.payload.id}?created=today`);
+      const groupId = result.payload.id;
+
+      await router.replace(
+        `/group/${groupId}?created=today`,
+        `/group/${groupId}`,
+        { shallow: true }
+      );
     }
   });
 
