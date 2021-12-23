@@ -1,8 +1,8 @@
 import { Action, action, persist, Thunk, thunk } from "easy-peasy";
 import { IStoreModel } from "../index";
 
-interface IExpenseValue {
-  id: string;
+export interface IExpenseValue {
+  id?: string;
   name: string;
   users: string[]; // user.id
   total: number;
@@ -31,6 +31,7 @@ export const expenseModel: IExpenseModel = persist(
   {
     expenses: {},
     setExpenses: action((state, { groupId, ...expense }) => {
+      expense["id"] = `expense-${new Date().getTime()}`;
       state.expenses[groupId].push(expense);
     }),
     getExpenseByGroup: thunk((actions, groupId, helpers) => {
