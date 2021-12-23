@@ -4,9 +4,11 @@ import { UserSelection } from "./UserSelection";
 import { IGroup } from "../../store/model/group";
 import { useStoreActions } from "../../store/hooks";
 import { schema } from "./group-schema";
+import { useRouter } from "next/router";
 
 export const GroupForm: FunctionComponent = () => {
   const setGroups = useStoreActions(actions => actions.group.setGroups);
+  const router = useRouter();
 
   const formik = useFormik<Omit<IGroup, "id">>({
     initialValues: {
@@ -14,8 +16,11 @@ export const GroupForm: FunctionComponent = () => {
       users: []
     },
     validationSchema: schema,
-    onSubmit: values => {
-      setGroups(values);
+    onSubmit: async values => {
+      const result = setGroups(values);
+
+      //@ts-ignore
+      await router.replace(`/group/${result.payload.id}?created=today`);
     }
   });
 
