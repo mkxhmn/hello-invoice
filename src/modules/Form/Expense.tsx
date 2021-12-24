@@ -1,22 +1,24 @@
 import { useFormik } from "formik";
-import { ChangeEvent, FunctionComponent } from "react";
+import { ChangeEvent, FunctionComponent, useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
 import { schema } from "./expense-schema";
 import { useRouter } from "next/router";
 import { IExpenseValue } from "../../store/model/expense";
-import dynamic from "next/dynamic";
-import { IUserSelection } from "./UserSelection";
 import { TextField } from "../../components/TextField";
 import { Button } from "../../components/Button";
-
-const UserSelection = dynamic<IUserSelection>(
-  () => import("./UserSelection").then(mod => mod.UserSelection),
-  { ssr: false }
-);
+import { AutoComplete } from "../../components/AutoComplete";
+import { IUser } from "../../store/model/user";
 
 export const ExpenseForm: FunctionComponent = () => {
   const setExpenses = useStoreActions(actions => actions.expense.setExpenses);
   const router = useRouter();
+
+  const getGroup = useStoreActions(actions => actions.group.getGroup);
+
+  const users = useMemo(() => getGroup(router.query.id as string).users, [
+    getGroup,
+    router.query.id
+  ]);
 
   const formik = useFormik<Omit<IExpenseValue, "id">>({
     initialValues: {
@@ -35,7 +37,7 @@ export const ExpenseForm: FunctionComponent = () => {
     }
   });
 
-  const handleUser = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUser = (_user: IUser, event: ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue(
       "users",
       event.target.checked
@@ -66,10 +68,15 @@ export const ExpenseForm: FunctionComponent = () => {
         onChange={formik.handleChange}
       />
       <section aria-details="user selection section">
-        <UserSelection users={formik.values.users} handleUser={handleUser} />
-        {formik.errors.users && (
-          <span className="text-sm text-red-400">{formik.errors.users}</span>
-        )}
+        <AutoComplete
+          placeholder="Participant"
+          filterBy="name"
+          label="Participant"
+          options={users as IUser[]}
+          handleChange={handleUser}
+          getOptionValue={(user: IUser) => user.id}
+          getOptionLabel={(user: IUser) => user.name}
+        />
       </section>
       <Button buttonColor="blue" type="submit">
         Create Expense
