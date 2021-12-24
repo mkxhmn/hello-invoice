@@ -1,7 +1,8 @@
 import { ChangeEvent, useMemo, useState } from "react";
 import { matchSorter } from "match-sorter";
 import { useDebounce } from "use-debounce";
-import { ITextField, TextField } from "./TextField";
+import { ITextField, TextField } from "../TextField";
+import { Chip } from "../Chip";
 
 export interface IAutocompleteProps<T, K> extends ITextField {
   options: T[];
@@ -51,9 +52,22 @@ export const AutoComplete = <T extends unknown, K extends keyof T>({
     }
   };
 
+  const [selections, setSelections] = useState<T[]>(() => []);
+
   const handleOptionChange = (recommendation: T) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
+    if (event.target.checked) {
+      setSelections(prevState => [...prevState, recommendation]);
+    } else {
+      setSelections(prevState =>
+        prevState.filter(
+          selection =>
+            getOptionValue(selection) !== getOptionValue(recommendation)
+        )
+      );
+    }
+
     handleChange(recommendation, event);
   };
 
@@ -65,7 +79,16 @@ export const AutoComplete = <T extends unknown, K extends keyof T>({
       >
         {label}
       </label>
-      <TextField onChange={handleUserInput} type="text" {...inputProps} />
+      <TextField
+        onChange={handleUserInput}
+        inputAdornment={selections.map(selection => (
+          <Chip key={getOptionValue(selection)}>
+            {getOptionLabel(selection)}
+          </Chip>
+        ))}
+        type="text"
+        {...inputProps}
+      />
       {errors && <span className="text-sm text-red-400">{errors}</span>}
       <div className="border-gray-800 border-2">
         {recommendations.map(recommendation => (
