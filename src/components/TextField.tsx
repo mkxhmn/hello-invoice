@@ -1,9 +1,9 @@
-import { FunctionComponent, InputHTMLAttributes } from "react";
+import { FunctionComponent, InputHTMLAttributes, ReactNode } from "react";
 
 export interface ITextField extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   errors?: string;
-  inputAdornment?: string;
+  inputAdornment?: string | ReactNode;
 }
 
 export const TextField: FunctionComponent<ITextField> = ({
