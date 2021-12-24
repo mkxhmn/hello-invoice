@@ -22,7 +22,9 @@ const GroupId = () => {
   }, [router.query.created]);
 
   const handleAddExpense = () => {
-    router?.push(`/group/${router.query.id}/expense`);
+    router?.push(`/group/${router.query.id}/expense`, undefined, {
+      shallow: true
+    });
   };
 
   return (
