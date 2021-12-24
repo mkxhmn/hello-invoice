@@ -6,7 +6,7 @@ import { matchSorter } from "match-sorter";
 import { useDebounce } from "use-debounce";
 import { IUser } from "../../store/model/user";
 
-interface IUserSelection {
+export interface IUserSelection {
   users: string[];
   handleUser: (event: ChangeEvent<HTMLInputElement>) => void;
 }
