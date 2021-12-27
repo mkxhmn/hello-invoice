@@ -3,22 +3,26 @@ import { matchSorter } from "match-sorter";
 import { useDebounce } from "use-debounce";
 import { ITextField, TextField } from "../TextField";
 import { Chip } from "../Chip";
+import {
+  IRecommendationModal,
+  RecommendationModal
+} from "./RecommendationModal";
 
-export interface IAutocompleteProps<T, K> extends ITextField {
+export interface IAutocompleteProps<T, K>
+  extends ITextField,
+    Pick<IRecommendationModal<T>, "getOptionLabel" | "getOptionValue"> {
+  createNewRecommendation?: (recommendation: string) => void;
+  errors?: string;
+  filterBy: K;
+  label: string;
   options: T[];
   handleChange: (
     recommendation: T,
     event: ChangeEvent<HTMLInputElement>
   ) => void;
-  errors?: string;
-  createNewRecommendation?: (recommendation: string) => void;
-  getOptionValue: (item: T) => string;
-  getOptionLabel: (item: T) => string;
-  label: string;
-  filterBy: K | string;
 }
 
-export const AutoComplete = <T extends unknown, K extends keyof T>({
+export const AutoComplete = <T extends object, K extends keyof T>({
   options,
   handleChange,
   errors,
@@ -36,7 +40,7 @@ export const AutoComplete = <T extends unknown, K extends keyof T>({
   };
 
   const [debounceInput] = useDebounce(userInput, 250);
-  const recommendations = useMemo(() => {
+  const recommendations = useMemo<T[]>(() => {
     if (!debounceInput) {
       return options;
     }
@@ -90,38 +94,14 @@ export const AutoComplete = <T extends unknown, K extends keyof T>({
         {...inputProps}
       />
       {errors && <span className="text-sm text-red-400">{errors}</span>}
-      <div className="border-gray-800 border-2">
-        {recommendations.map(recommendation => (
-          <div
-            key={getOptionValue(recommendation)}
-            className="mt-2 align-center flex"
-          >
-            <input
-              type="checkbox"
-              id={getOptionValue(recommendation)}
-              value={getOptionValue(recommendation)}
-              className="w-4 h-4"
-              //@ts-ignore
-              onChange={handleOptionChange(recommendation)}
-            />
-            <label
-              htmlFor={getOptionValue(recommendation)}
-              className="text-gray-700 text-sm ml-1 font-bold mb-1"
-            >
-              {getOptionLabel(recommendation)}
-            </label>
-          </div>
-        ))}
-        {createNewRecommendation && !recommendations.length && (
-          <button
-            className="text-blue-400"
-            type="button"
-            onClick={handleAddRecommendation}
-          >
-            Add
-          </button>
-        )}
-      </div>
+      <RecommendationModal
+        allowCreateNew={Boolean(createNewRecommendation)}
+        getOptionLabel={getOptionLabel}
+        getOptionValue={getOptionValue}
+        handleAddRecommendation={handleAddRecommendation}
+        handleOptionChange={handleOptionChange}
+        recommendations={recommendations}
+      />
     </div>
   );
 };
