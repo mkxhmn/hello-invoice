@@ -75,6 +75,15 @@ export const AutoComplete = <T extends object, K extends keyof T>({
     handleChange(recommendation, event);
   };
 
+  const handleDeleteChip = (recommendation: T) => () => {
+    setSelections(prevState =>
+      prevState.filter(
+        selection =>
+          getOptionValue(selection) !== getOptionValue(recommendation)
+      )
+    );
+  };
+
   return (
     <div className="mb-4">
       <label
@@ -86,7 +95,10 @@ export const AutoComplete = <T extends object, K extends keyof T>({
       <TextField
         onChange={handleUserInput}
         inputAdornment={selections.map(selection => (
-          <Chip key={getOptionValue(selection)}>
+          <Chip
+            key={getOptionValue(selection)}
+            handleDelete={handleDeleteChip(selection)}
+          >
             {getOptionLabel(selection)}
           </Chip>
         ))}
@@ -95,6 +107,7 @@ export const AutoComplete = <T extends object, K extends keyof T>({
       />
       {errors && <span className="text-sm text-red-400">{errors}</span>}
       <RecommendationModal
+        selections={selections}
         allowCreateNew={Boolean(createNewRecommendation)}
         getOptionLabel={getOptionLabel}
         getOptionValue={getOptionValue}
