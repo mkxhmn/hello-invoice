@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^0.3.3",
-    "@heroicons/react": "^1.0.5",
     "canvas-confetti": "^1.4.0",
     "easy-peasy": "^5.0.4",
     "formik": "^2.2.9",
