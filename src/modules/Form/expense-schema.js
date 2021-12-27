@@ -10,6 +10,6 @@ export const schema = yup.object().shape({
   groupId: yup.string(),
   total: yup
     .number()
-    .min(1, "total must be more than 1")
+    .min(1, "total must be more than RM 1")
     .required("total is required")
 });
