@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useMemo } from "react";
 
 export interface IRecommendationModal<T> {
   allowCreateNew: boolean;
@@ -9,6 +9,7 @@ export interface IRecommendationModal<T> {
     recommendation: T
   ) => (event: ChangeEvent<HTMLInputElement>) => void;
   recommendations: T[];
+  selections: T[];
 }
 
 export const RecommendationModal = <T extends object>({
@@ -17,30 +18,33 @@ export const RecommendationModal = <T extends object>({
   getOptionValue,
   handleAddRecommendation,
   handleOptionChange,
-  recommendations
+  recommendations,
+  selections
 }: IRecommendationModal<T>) => {
+  const selectionsValues = useMemo(() => selections.map(getOptionValue), [
+    selections,
+    getOptionValue
+  ]);
+
   return (
-    <div className="border-gray-800 border-2">
+    <div className="-mt-2 py-2 border-gray-50 border-2 rounded-lg shadow-md ">
       {recommendations.map(recommendation => (
-        <div
+        <label
           key={getOptionValue(recommendation)}
-          className="mt-2 align-center flex"
+          htmlFor={getOptionValue(recommendation)}
+          className="flex items-center py-2 pl-3 hover:bg-gray-100 cursor-pointer text-gray-700 text-sm font-medium mb-1"
         >
           <input
             type="checkbox"
             id={getOptionValue(recommendation)}
             value={getOptionValue(recommendation)}
-            className="w-4 h-4"
+            className="w-4 h-4 align-middle mx-1 border-2 "
             //@ts-ignore
             onChange={handleOptionChange(recommendation)}
+            checked={selectionsValues.includes(getOptionValue(recommendation))}
           />
-          <label
-            htmlFor={getOptionValue(recommendation)}
-            className="text-gray-700 text-sm ml-1 font-bold mb-1"
-          >
-            {getOptionLabel(recommendation)}
-          </label>
-        </div>
+          {getOptionLabel(recommendation)}
+        </label>
       ))}
       {allowCreateNew && !recommendations.length && (
         <button
