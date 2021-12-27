@@ -1,7 +1,8 @@
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, CSSProperties, Ref, useMemo } from "react";
 
 export interface IRecommendationModal<T> {
   allowCreateNew: boolean;
+  floatingStyle: CSSProperties;
   getOptionLabel: (item: T) => string;
   getOptionValue: (item: T) => string;
   handleAddRecommendation: () => void;
@@ -10,15 +11,20 @@ export interface IRecommendationModal<T> {
   ) => (event: ChangeEvent<HTMLInputElement>) => void;
   recommendations: T[];
   selections: T[];
+  show: boolean;
+  modalRef: Ref<HTMLDivElement>;
 }
 
 export const RecommendationModal = <T extends object>({
   allowCreateNew,
+  floatingStyle,
   getOptionLabel,
   getOptionValue,
   handleAddRecommendation,
   handleOptionChange,
   recommendations,
+  modalRef,
+  show,
   selections
 }: IRecommendationModal<T>) => {
   const selectionsValues = useMemo(() => selections.map(getOptionValue), [
@@ -26,8 +32,16 @@ export const RecommendationModal = <T extends object>({
     getOptionValue
   ]);
 
+  if (!show) {
+    return null;
+  }
+
   return (
-    <div className="-mt-2 py-2 border-gray-50 border-2 rounded-lg shadow-md ">
+    <div
+      ref={modalRef}
+      className="py-2 mt-1 border-gray-50 bg-white border-2 rounded-lg shadow-md w-full "
+      style={floatingStyle}
+    >
       {recommendations.map(recommendation => (
         <label
           key={getOptionValue(recommendation)}

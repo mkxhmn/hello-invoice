@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, RefObject, useMemo, useState } from "react";
 import { matchSorter } from "match-sorter";
 import { useDebounce } from "use-debounce";
 import { ITextField, TextField } from "../TextField";
@@ -7,9 +7,11 @@ import {
   IRecommendationModal,
   RecommendationModal
 } from "./RecommendationModal";
+import { shift, useFloating } from "@floating-ui/react-dom";
+import { useClickAway } from "../../utility/useClickAway";
 
 export interface IAutocompleteProps<T, K>
-  extends ITextField,
+  extends Omit<ITextField, "textFieldRef">,
     Pick<IRecommendationModal<T>, "getOptionLabel" | "getOptionValue"> {
   createNewRecommendation?: (recommendation: string) => void;
   errors?: string;
@@ -84,8 +86,32 @@ export const AutoComplete = <T extends object, K extends keyof T>({
     );
   };
 
+  const { x, y, reference, floating, strategy, refs } = useFloating({
+    placement: "bottom-start",
+    middleware: [shift()]
+  });
+
+  const [showModal, setShowModal] = useState(() => false);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    if (showModal) {
+      setShowModal(false);
+    }
+  };
+
+  useClickAway(
+    () => {
+      handleCloseModal();
+    },
+    { ref: refs.reference as RefObject<HTMLElement> }
+  );
+
   return (
-    <div className="mb-4">
+    <div className="mb-4 relative " ref={reference}>
       <label
         className="block text-gray-700 text-sm font-bold mb-1"
         htmlFor={inputProps.id}
@@ -103,10 +129,18 @@ export const AutoComplete = <T extends object, K extends keyof T>({
           </Chip>
         ))}
         type="text"
+        onFocus={handleShowModal}
         {...inputProps}
       />
       {errors && <span className="text-sm text-red-400">{errors}</span>}
       <RecommendationModal
+        show={showModal}
+        modalRef={floating}
+        floatingStyle={{
+          position: strategy,
+          top: y ?? undefined,
+          left: x ?? undefined
+        }}
         selections={selections}
         allowCreateNew={Boolean(createNewRecommendation)}
         getOptionLabel={getOptionLabel}
