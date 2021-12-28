@@ -14,7 +14,7 @@ export interface IUser {
 export interface IUserModel {
   users: IUser[];
   setUsers: Action<IUserModel, string>;
-  getUser: Thunk<IUserModel, string, undefined, IStoreModel, IUser | undefined>;
+  getUser: Thunk<IUserModel, string, undefined, IStoreModel, IUser>;
 }
 
 export const userModel: IUserModel = persist(
@@ -24,7 +24,16 @@ export const userModel: IUserModel = persist(
       state.users.push({ name, id: `user-${new Date().getTime()}` });
     }),
     getUser: thunk((actions, userId, helpers) => {
-      return helpers.getState().users.find(user => user.id === userId);
+      const user = helpers.getState().users.find(user => user.id === userId);
+
+      if (!user) {
+        return {
+          id: "",
+          name: ""
+        };
+      }
+
+      return user;
     })
   },
   {
