@@ -77,15 +77,6 @@ export const AutoComplete = <T extends object, K extends keyof T>({
     handleChange(recommendation, event);
   };
 
-  const handleDeleteChip = (recommendation: T) => () => {
-    setSelections(prevState =>
-      prevState.filter(
-        selection =>
-          getOptionValue(selection) !== getOptionValue(recommendation)
-      )
-    );
-  };
-
   const { x, y, reference, floating, strategy, refs } = useFloating({
     placement: "bottom-start",
     middleware: [shift()]
@@ -123,7 +114,8 @@ export const AutoComplete = <T extends object, K extends keyof T>({
         inputAdornment={selections.map(selection => (
           <Chip
             key={getOptionValue(selection)}
-            handleDelete={handleDeleteChip(selection)}
+            value={getOptionValue(selection)}
+            handleDelete={handleOptionChange(selection)}
           >
             {getOptionLabel(selection)}
           </Chip>
