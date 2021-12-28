@@ -3,7 +3,7 @@ import { ChangeEvent, FunctionComponent, useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
 import { schema } from "./expense-schema";
 import { useRouter } from "next/router";
-import { IExpenseValue } from "../../store/model/expense";
+import { ISetExpenses } from "../../store/model/expense";
 import { TextField } from "../../components/TextField";
 import { Button } from "../../components/Button";
 import { AutoComplete } from "../../components/AutoComplete";
@@ -20,13 +20,16 @@ export const ExpenseForm: FunctionComponent = () => {
     router.query.id
   ]);
 
-  const formik = useFormik<Omit<IExpenseValue, "id">>({
+  const formik = useFormik<ISetExpenses>({
     initialValues: {
       name: "",
       users: [],
       groupId: router.query.id as string,
-      total: 0
+
+      //@ts-ignore
+      total: ""
     },
+    enableReinitialize: true,
     validationSchema: schema,
     onSubmit: async values => {
       setExpenses(values);
@@ -63,7 +66,7 @@ export const ExpenseForm: FunctionComponent = () => {
         errors={formik.errors.total}
         id="total"
         type="number"
-        placeholder="$ total"
+        placeholder="total"
         value={formik.values.total}
         onChange={formik.handleChange}
       />
