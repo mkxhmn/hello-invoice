@@ -1,19 +1,20 @@
 import { Action, action, persist, Thunk, thunk } from "easy-peasy";
 import { IStoreModel } from "../index";
 
-interface IExpenseUser {
-  id: string;
-  paid: boolean;
-  paidDate?: string; // ISO string date
+interface IPaymentLogs {
+  user: string;
+  amount: number;
+  created: string; // ISO string date
 }
 
 export interface IExpenseValue {
   id?: string;
   name: string;
-  users: IExpenseUser[]; // user.id
+  users: string[]; // user.id
   total: number;
   groupId: string;
   created: string; // ISO string date
+  payment: IPaymentLogs[];
 }
 
 export interface IGetExpensesByGroup extends Omit<IExpenseValue, "groupId"> {}
@@ -22,9 +23,8 @@ export interface IExpense {
   [groupId: string]: IGetExpensesByGroup[];
 }
 
-export interface ISetExpenses extends Omit<IExpenseValue, "created" | "users"> {
-  users: string[];
-}
+export interface ISetExpenses
+  extends Omit<IExpenseValue, "created" | "payment"> {}
 
 export interface IExpenseModel {
   expenses: IExpense;
@@ -41,7 +41,7 @@ export interface IExpenseModel {
 export const expenseModel: IExpenseModel = persist(
   {
     expenses: {},
-    setExpenses: action((state, { groupId, users, ...expense }) => {
+    setExpenses: action((state, { groupId, ...expense }) => {
       expense["id"] = `expense-${new Date().getTime()}`;
 
       // initialize new expenses group
@@ -51,8 +51,8 @@ export const expenseModel: IExpenseModel = persist(
 
       state.expenses[groupId].push({
         ...expense,
-        users: users.map(id => ({ id, paid: false })),
-        created: new Date().toISOString()
+        created: new Date().toISOString(),
+        payment: []
       });
     }),
     getExpenseByGroup: thunk((actions, groupId, helpers) => {
