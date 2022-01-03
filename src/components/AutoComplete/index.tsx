@@ -30,19 +30,16 @@ export const AutoComplete: FunctionComponent<IAutoComplete> = ({
         errors={errors}
         {...textFieldProps}
       />
-      {showModal && (
-        <div
-          className="w-full"
-          ref={floating}
-          style={{
-            left: x ?? undefined,
-            top: y ?? undefined,
-            position: strategy
-          }}
-        >
-          <Modal selections={selections} show={showModal} />
-        </div>
-      )}
+      <Modal
+        selections={selections}
+        show={showModal}
+        modalStyle={{
+          left: x ?? undefined,
+          top: y ?? undefined,
+          position: strategy
+        }}
+        modalRef={floating}
+      />
     </div>
   );
 };
