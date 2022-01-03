@@ -1,14 +1,28 @@
 import { useFormik } from "formik";
-import { ChangeEvent, FunctionComponent } from "react";
+import { ChangeEvent, FunctionComponent, useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
 import { schema } from "./group-schema";
 import { useRouter } from "next/router";
 import { IExpenseValue } from "../../store/model/expense";
 import { AutoComplete } from "../../components/AutoComplete";
+import { IUser } from "../../store/model/user";
 
 export const ExpenseForm: FunctionComponent = () => {
   const setExpenses = useStoreActions(actions => actions.expense.setExpenses);
   const router = useRouter();
+
+  const getGroup = useStoreActions(actions => actions.group.getGroup);
+
+  const users = useMemo(() => getGroup(router.query.id as string).users, [
+    getGroup,
+    router.query.id
+  ]);
+
+  console.log(
+    "👾 %c users ",
+    "background-color: #d73d32; color: white;",
+    users
+  );
 
   const formik = useFormik<Omit<IExpenseValue, "id">>({
     initialValues: {

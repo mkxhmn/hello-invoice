@@ -6,13 +6,13 @@ export interface ISelections {
 }
 
 export interface IModal {
-  selections: ISelections[];
+  options: ISelections[];
   show: boolean;
   modalStyle: CSSProperties;
   modalRef: Ref<HTMLDivElement>;
 }
 
-export function Modal({ selections, show, modalStyle, modalRef }: IModal) {
+export function Modal({ options, show, modalStyle, modalRef }: IModal) {
   if (!show) {
     return null;
   }
@@ -23,7 +23,7 @@ export function Modal({ selections, show, modalStyle, modalRef }: IModal) {
       style={modalStyle}
       ref={modalRef}
     >
-      {selections.map(({ value, label }) => (
+      {options.map(({ value, label }) => (
         <label key={value} className="flex items-center py-2 pl-3 ">
           <input
             type="checkbox"

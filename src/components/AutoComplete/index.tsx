@@ -1,17 +1,19 @@
-import { FunctionComponent, RefObject, useState } from "react";
+import { RefObject, useState } from "react";
 import { ITextField, TextField } from "../TextField";
-import { IModal, Modal } from "./Modal.AutoComplete";
+import { Modal } from "./Modal.AutoComplete";
 import { shift, useFloating } from "@floating-ui/react-dom";
 import { useClickAway } from "../../utility/useClickAway";
 
-interface IAutoComplete extends ITextField, IModal {}
+interface IAutoComplete<T> extends ITextField {
+  options: T[];
+}
 
-export const AutoComplete: FunctionComponent<IAutoComplete> = ({
+export const AutoComplete = <T extends object>({
   label,
   errors,
-  selections,
+  options,
   ...textFieldProps
-}) => {
+}: IAutoComplete<T>) => {
   const { x, y, reference, floating, strategy, refs } = useFloating({
     placement: "bottom-start",
     middleware: [shift()]
@@ -40,7 +42,7 @@ export const AutoComplete: FunctionComponent<IAutoComplete> = ({
         {...textFieldProps}
       />
       <Modal
-        selections={selections}
+        options={options}
         show={showModal}
         modalStyle={{
           left: x ?? undefined,
