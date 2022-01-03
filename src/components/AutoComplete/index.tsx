@@ -1,10 +1,12 @@
 import { RefObject, useState } from "react";
 import { ITextField, TextField } from "../TextField";
-import { Modal } from "./Modal.AutoComplete";
+import { IModal, Modal } from "./Modal.AutoComplete";
 import { shift, useFloating } from "@floating-ui/react-dom";
 import { useClickAway } from "../../utility/useClickAway";
 
-interface IAutoComplete<T> extends ITextField {
+interface IAutoComplete<T>
+  extends ITextField,
+    Pick<IModal<T>, "getOptionLabel" | "getOptionValue"> {
   options: T[];
 }
 
@@ -12,6 +14,9 @@ export const AutoComplete = <T extends object>({
   label,
   errors,
   options,
+
+  getOptionLabel,
+  getOptionValue,
   ...textFieldProps
 }: IAutoComplete<T>) => {
   const { x, y, reference, floating, strategy, refs } = useFloating({
@@ -50,6 +55,8 @@ export const AutoComplete = <T extends object>({
           position: strategy
         }}
         modalRef={floating}
+        getOptionLabel={getOptionLabel}
+        getOptionValue={getOptionValue}
       />
     </div>
   );
