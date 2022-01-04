@@ -40,12 +40,6 @@ export const AutoComplete = <T extends object>({
 
   const [selections, setSelections] = useState<T[]>(() => []);
 
-  console.log(
-    "👾 %c selections ",
-    "background-color: #d73d32; color: white;",
-    selections
-  );
-
   const handleOptionChange = (selection: T) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -67,6 +61,11 @@ export const AutoComplete = <T extends object>({
         onFocus={handleShowModal}
         label={label}
         errors={errors}
+        inputAdornment={selections.map(selection => (
+          <span className="mr-1" key={getOptionValue(selection)}>
+            {getOptionLabel(selection)}
+          </span>
+        ))}
         {...textFieldProps}
       />
       <Modal
