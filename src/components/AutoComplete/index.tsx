@@ -1,4 +1,4 @@
-import { RefObject, useState } from "react";
+import { ChangeEvent, RefObject, useState } from "react";
 import { ITextField, TextField } from "../TextField";
 import { IModal, Modal } from "./Modal.AutoComplete";
 import { shift, useFloating } from "@floating-ui/react-dom";
@@ -38,6 +38,29 @@ export const AutoComplete = <T extends object>({
     handleCloseModal();
   }, [refs.reference as RefObject<HTMLElement>]);
 
+  const [selections, setSelections] = useState<T[]>(() => []);
+
+  console.log(
+    "👾 %c selections ",
+    "background-color: #d73d32; color: white;",
+    selections
+  );
+
+  const handleOptionChange = (selection: T) => (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.checked) {
+      setSelections(prevState => [selection, ...prevState]);
+    } else {
+      setSelections(prevState =>
+        prevState.filter(
+          prevSelection =>
+            getOptionValue(prevSelection) !== getOptionValue(selection)
+        )
+      );
+    }
+  };
+
   return (
     <div ref={reference} className=" relative ">
       <TextField
@@ -47,6 +70,7 @@ export const AutoComplete = <T extends object>({
         {...textFieldProps}
       />
       <Modal
+        selections={selections}
         options={options}
         show={showModal}
         modalStyle={{
@@ -57,6 +81,7 @@ export const AutoComplete = <T extends object>({
         modalRef={floating}
         getOptionLabel={getOptionLabel}
         getOptionValue={getOptionValue}
+        handleOptionChange={handleOptionChange}
       />
     </div>
   );

@@ -75,6 +75,9 @@ export const ExpenseForm: FunctionComponent = () => {
           label="Participant"
           id="users"
           placeholder="participants"
+          options={users as IUser[]}
+          getOptionValue={option => option.id}
+          getOptionLabel={option => option.name}
         />
       </section>
       <button
