@@ -1,11 +1,12 @@
 import { useFormik } from "formik";
-import { ChangeEvent, FunctionComponent, useEffect, useMemo } from "react";
+import { ChangeEvent, FunctionComponent, useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
 import { schema } from "./group-schema";
 import { useRouter } from "next/router";
 import { IExpenseValue } from "../../store/model/expense";
 import { AutoComplete } from "../../components/AutoComplete";
 import { IUser } from "../../store/model/user";
+import { TextField } from "../../components/TextField";
 
 export const ExpenseForm: FunctionComponent = () => {
   const setExpenses = useStoreActions(actions => actions.expense.setExpenses);
@@ -34,14 +35,6 @@ export const ExpenseForm: FunctionComponent = () => {
     }
   });
 
-  useEffect(() => {
-    console.log(
-      "👾 %c formik.values.users ",
-      "background-color: #d73d32; color: white;",
-      formik.values.users
-    );
-  }, [formik.values.users]);
-
   const handleUser = (event: ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue(
       "users",
@@ -53,25 +46,15 @@ export const ExpenseForm: FunctionComponent = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <section className="mb-4" aria-details="group name section">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-1"
-          htmlFor="name"
-        >
-          Name
-        </label>
-        <input
-          className="w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm"
-          id="name"
-          type="text"
-          placeholder="Name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-        />
-        {formik.errors.name && (
-          <span className="text-sm text-red-400">{formik.errors.name}</span>
-        )}
-      </section>
+      <TextField
+        label="Name"
+        errors={formik.errors.name}
+        id="name"
+        type="text"
+        placeholder="Name"
+        value={formik.values.name}
+        onChange={formik.handleChange}
+      />
       <section aria-details="user selection section" className="mb-4">
         <AutoComplete
           onChange={handleUser}

@@ -12,7 +12,7 @@ export const TextField: FunctionComponent<ITextField> = ({
   inputAdornment,
   ...inputProps
 }) => (
-  <>
+  <div className="mb-4">
     <label
       className="block text-gray-700 text-sm font-bold mb-1"
       htmlFor="name"
@@ -29,5 +29,5 @@ export const TextField: FunctionComponent<ITextField> = ({
       />
     </div>
     {errors && <span className="text-sm text-red-400">{errors}</span>}
-  </>
+  </div>
 );
