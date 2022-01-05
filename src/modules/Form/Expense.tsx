@@ -1,9 +1,9 @@
 import { useFormik } from "formik";
 import { ChangeEvent, FunctionComponent, useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
-import { schema } from "./group-schema";
+import { schema } from "./expense-schema";
 import { useRouter } from "next/router";
-import { IExpenseValue } from "../../store/model/expense";
+import { ISetExpenses } from "../../store/model/expense";
 import { AutoComplete } from "../../components/AutoComplete";
 import { IUser } from "../../store/model/user";
 import { TextField } from "../../components/TextField";
@@ -19,19 +19,26 @@ export const ExpenseForm: FunctionComponent = () => {
     router.query.id
   ]);
 
-  const formik = useFormik<Omit<IExpenseValue, "id">>({
+  const formik = useFormik<ISetExpenses>({
     initialValues: {
       name: "",
       users: [],
       groupId: router.query.id as string,
-      total: 0
+
+      //@ts-ignore
+      total: ""
     },
     validationSchema: schema,
     onSubmit: async values => {
       setExpenses(values);
 
-      //@ts-ignore
-      await router.replace(`/group/${router.query.id}`, { shallow: true });
+      await router.replace(
+        `/group/${router.query.id}?created=today`,
+        `/group/${router.query.id}`,
+        {
+          shallow: true
+        }
+      );
     }
   });
 
@@ -55,6 +62,15 @@ export const ExpenseForm: FunctionComponent = () => {
         value={formik.values.name}
         onChange={formik.handleChange}
       />
+      <TextField
+        label="Total"
+        errors={formik.errors.total}
+        id="total"
+        type="number"
+        placeholder="Total"
+        value={formik.values.total}
+        onChange={formik.handleChange}
+      />
       <section aria-details="user selection section" className="mb-4">
         <AutoComplete
           onChange={handleUser}
@@ -70,7 +86,7 @@ export const ExpenseForm: FunctionComponent = () => {
         type="submit"
         className="bg-indigo-400 text-indigo-900 py-2 px-4 rounded-lg shadow-md"
       >
-        Create Group
+        Create Expense
       </button>
     </form>
   );
