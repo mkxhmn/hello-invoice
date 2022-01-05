@@ -20,7 +20,9 @@ export const TextField: FunctionComponent<ITextField> = ({
       {label}
     </label>
     <div className=" w-full py-2 flex flex-row px-3 rounded-lg shadow-md ">
-      {inputAdornment && <span>{inputAdornment}</span>}
+      {inputAdornment && (
+        <span className="flex sm:text-sm mr-2 ">{inputAdornment}</span>
+      )}
       <input
         className="w-full flex flex-1 cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white sm:text-sm"
         {...inputProps}

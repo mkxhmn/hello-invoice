@@ -10,7 +10,11 @@ export const Chip: FunctionComponent = props => {
         type="button"
         className=" mr-1 block relative text-center hover:bg-gray-400 bg-gray-300 text-xs rounded-full w-4 h-4"
       >
-        <input type="checkbox" checked={true} />
+        <input
+          type="checkbox"
+          checked={true}
+          className="absolute top-0 left-0 h-4 w-4 opacity-0"
+        />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-3 w-3 m-auto text-white "
