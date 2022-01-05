@@ -3,6 +3,7 @@ import { ITextField, TextField } from "../TextField";
 import { IModal, Modal } from "./Modal.AutoComplete";
 import { shift, useFloating } from "@floating-ui/react-dom";
 import { useClickAway } from "../../utility/useClickAway";
+import { Chip } from "../Chip";
 
 interface IAutoComplete<T>
   extends ITextField,
@@ -62,9 +63,9 @@ export const AutoComplete = <T extends object>({
         label={label}
         errors={errors}
         inputAdornment={selections.map(selection => (
-          <span className="mr-1" key={getOptionValue(selection)}>
+          <Chip key={getOptionValue(selection)}>
             {getOptionLabel(selection)}
-          </span>
+          </Chip>
         ))}
         {...textFieldProps}
       />
