@@ -9,12 +9,14 @@ interface IAutoComplete<T>
   extends ITextField,
     Pick<IModal<T>, "getOptionLabel" | "getOptionValue"> {
   options: T[];
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const AutoComplete = <T extends object>({
   label,
   errors,
   options,
+  onChange,
 
   getOptionLabel,
   getOptionValue,
@@ -54,6 +56,8 @@ export const AutoComplete = <T extends object>({
         )
       );
     }
+
+    onChange(event);
   };
 
   return (

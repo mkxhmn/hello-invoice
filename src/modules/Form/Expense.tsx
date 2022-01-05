@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { ChangeEvent, FunctionComponent, useMemo } from "react";
+import { ChangeEvent, FunctionComponent, useEffect, useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
 import { schema } from "./group-schema";
 import { useRouter } from "next/router";
@@ -18,12 +18,6 @@ export const ExpenseForm: FunctionComponent = () => {
     router.query.id
   ]);
 
-  console.log(
-    "👾 %c users ",
-    "background-color: #d73d32; color: white;",
-    users
-  );
-
   const formik = useFormik<Omit<IExpenseValue, "id">>({
     initialValues: {
       name: "",
@@ -39,6 +33,14 @@ export const ExpenseForm: FunctionComponent = () => {
       await router.replace(`/group/${router.query.id}`, { shallow: true });
     }
   });
+
+  useEffect(() => {
+    console.log(
+      "👾 %c formik.values.users ",
+      "background-color: #d73d32; color: white;",
+      formik.values.users
+    );
+  }, [formik.values.users]);
 
   const handleUser = (event: ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue(
@@ -72,6 +74,7 @@ export const ExpenseForm: FunctionComponent = () => {
       </section>
       <section aria-details="user selection section" className="mb-4">
         <AutoComplete
+          onChange={handleUser}
           label="Participant"
           id="users"
           placeholder="participants"
