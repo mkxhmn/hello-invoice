@@ -63,7 +63,11 @@ export const AutoComplete = <T extends object>({
         label={label}
         errors={errors}
         inputAdornment={selections.map(selection => (
-          <Chip key={getOptionValue(selection)}>
+          <Chip
+            handleDelete={handleOptionChange(selection)}
+            key={getOptionValue(selection)}
+            value={getOptionValue(selection)}
+          >
             {getOptionLabel(selection)}
           </Chip>
         ))}
