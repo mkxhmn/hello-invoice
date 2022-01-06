@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import confetti from "canvas-confetti";
 import { useStoreActions } from "../../../src/store/hooks";
+import { ExpenseCard } from "../../../src/components/ExpenseCard";
 
 const GroupId = () => {
   const router = useRouter();
@@ -24,6 +25,12 @@ const GroupId = () => {
   const handleAddExpense = () => {
     router?.push(`/group/${router.query.id}/expense`);
   };
+
+  console.log(
+    "👾 %c group.expenses ",
+    "background-color: #d73d32; color: white;",
+    group.expenses
+  );
 
   return (
     <Container>
@@ -52,6 +59,11 @@ const GroupId = () => {
             </svg>
           </button>
         </div>
+      </section>
+      <section>
+        {group.expenses.map(expense => (
+          <ExpenseCard {...expense} key={expense.id} />
+        ))}
       </section>
     </Container>
   );
