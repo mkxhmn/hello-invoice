@@ -28,6 +28,7 @@ export const ExpenseForm: FunctionComponent = () => {
       //@ts-ignore
       total: ""
     },
+    enableReinitialize: true,
     validationSchema: schema,
     onSubmit: async values => {
       setExpenses(values);
