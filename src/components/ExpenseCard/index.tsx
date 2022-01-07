@@ -1,10 +1,10 @@
 import { FunctionComponent, useMemo } from "react";
-import { IGetExpensesByGroup } from "../../store/model/expense";
+import { IExpenseValue } from "../../store/model/expense";
 import dayjs from "dayjs";
 import { useStoreActions } from "../../store/hooks";
 import { IUserCard, UserCard } from "./UserCard";
 
-export const ExpenseCard: FunctionComponent<IGetExpensesByGroup> = expense => {
+export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
   const total = useMemo(
     () =>
       new Intl.NumberFormat("ms-MY", {
@@ -28,9 +28,11 @@ export const ExpenseCard: FunctionComponent<IGetExpensesByGroup> = expense => {
     () =>
       expense.users.map(userId => ({
         ...getUser(userId),
+        expenseId: expense.id as string,
+        groupId: expense.groupId,
         total: expense.total / expense.users.length
       })),
-    [expense.users, expense.total, getUser]
+    [expense.users, expense.id, expense.groupId, expense.total, getUser]
   );
 
   return (
