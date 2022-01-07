@@ -56,7 +56,11 @@ const GroupId = () => {
       </section>
       <section className="grid gap-4">
         {group.expenses.map(expense => (
-          <ExpenseCard {...expense} key={expense.id} />
+          <ExpenseCard
+            {...expense}
+            groupId={router.query.id as string}
+            key={expense.id}
+          />
         ))}
       </section>
     </Container>
