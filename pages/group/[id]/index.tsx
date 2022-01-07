@@ -26,12 +26,6 @@ const GroupId = () => {
     router?.push(`/group/${router.query.id}/expense`);
   };
 
-  console.log(
-    "👾 %c group.expenses ",
-    "background-color: #d73d32; color: white;",
-    group.expenses
-  );
-
   return (
     <Container>
       <section className="mt-20 mb-8 items-center justify-between flex">
