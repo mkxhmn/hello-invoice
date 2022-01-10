@@ -1,11 +1,13 @@
 import { IUser } from "../../store/model/user";
 import { useMemo } from "react";
 import { useStoreActions } from "../../store/hooks";
+import { IPayment } from "../../store/model/expense";
 
 export interface IUserCard extends IUser {
   total: number;
   groupId: string;
   expenseId: string;
+  payment: IPayment[];
 }
 
 export const UserCard = (user: IUserCard) => {
