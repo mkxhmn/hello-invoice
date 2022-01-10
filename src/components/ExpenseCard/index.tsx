@@ -30,9 +30,10 @@ export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
         ...getUser(userId),
         expenseId: expense.id as string,
         groupId: expense.groupId,
-        total: expense.total / expense.users.length
+        total: expense.total / expense.users.length,
+        payment: expense.payment
       })),
-    [expense.users, expense.id, expense.groupId, expense.total, getUser]
+    [expense, getUser]
   );
 
   return (
