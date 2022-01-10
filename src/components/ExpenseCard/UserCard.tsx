@@ -11,14 +11,20 @@ export interface IUserCard extends IUser {
 export const UserCard = (user: IUserCard) => {
   const setPayment = useStoreActions(actions => actions.expense.setPayment);
 
-  const total = useMemo(
-    () =>
-      new Intl.NumberFormat("ms-MY", {
-        style: "currency",
-        currency: "MYR"
-      }).format(user.total),
-    [user.total]
-  );
+  const total = useMemo(() => {
+    const totalPaidByUser = user.payment
+      .filter(({ userId }) => userId === user.id) // array
+      .reduce(
+        (totalPaymentByUser, userPayment) =>
+          totalPaymentByUser + userPayment.total,
+        0
+      ); // number
+
+    return new Intl.NumberFormat("ms-MY", {
+      style: "currency",
+      currency: "MYR"
+    }).format(user.total - totalPaidByUser);
+  }, [user.payment, user.total, user.id]);
 
   const handleQuickPayment = () => {
     const result = setPayment({
