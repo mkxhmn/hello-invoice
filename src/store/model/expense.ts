@@ -1,4 +1,12 @@
-import { Action, action, persist, Thunk, thunk } from "easy-peasy";
+import {
+  Action,
+  action,
+  computed,
+  Computed,
+  persist,
+  Thunk,
+  thunk
+} from "easy-peasy";
 import { IStoreModel } from "../index";
 
 interface ISetPayment {
@@ -51,11 +59,18 @@ export interface IExpenseModel {
     IPayment[]
   >;
   setPaymentWithGroupIdByExpenseId: Action<IExpenseModel, ISetPayment>;
+  expenseByGroupId: Computed<
+    IExpenseModel,
+    (groupId: string) => IGetExpensesByGroup[]
+  >;
 }
 
 export const expenseModel: IExpenseModel = persist(
   {
     expenses: {},
+    expenseByGroupId: computed(state => groupId =>
+      state.expenses?.[groupId] ?? []
+    ),
     setPayment: thunk((actions, payload, helpers) => {
       const { setPaymentWithGroupIdByExpenseId } = actions;
 
