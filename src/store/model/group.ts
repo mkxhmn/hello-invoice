@@ -1,4 +1,12 @@
-import { Action, action, persist, thunk, Thunk } from "easy-peasy";
+import {
+  Action,
+  action,
+  computed,
+  Computed,
+  persist,
+  thunk,
+  Thunk
+} from "easy-peasy";
 import { IStoreModel } from "../index";
 import { IUser } from "./user";
 import { IGetExpensesByGroup } from "./expense";
@@ -19,11 +27,19 @@ export interface IGroupModel {
   groups: IGroup[];
   setGroups: Action<IGroupModel, IGroup>;
   getGroup: Thunk<IGroupModel, string, undefined, IStoreModel, IGetGroup>;
+  groupById: Computed<IGroupModel, (id: string) => IGroup>;
 }
 
 export const groupModel: IGroupModel = persist(
   {
     groups: [],
+    groupById: computed(state => id =>
+      state.groups.find(group => group.id === id) ?? {
+        id: "",
+        name: "",
+        users: []
+      }
+    ),
     setGroups: action((state, group) => {
       group["id"] = `group-${new Date().getTime()}`;
       state.groups.push(group);
