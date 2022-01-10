@@ -1,9 +1,12 @@
-/**
- * [ ] user
- * [ ] group
- * [ ] expenses
- */
-import { Action, action, persist, thunk, Thunk } from "easy-peasy";
+import {
+  Action,
+  action,
+  computed,
+  Computed,
+  persist,
+  thunk,
+  Thunk
+} from "easy-peasy";
 import { IStoreModel } from "../index";
 
 export interface IUser {
@@ -15,11 +18,15 @@ export interface IUserModel {
   users: IUser[];
   setUsers: Action<IUserModel, string>;
   getUser: Thunk<IUserModel, string, undefined, IStoreModel, IUser>;
+  userById: Computed<IUserModel, (id: string) => IUser>;
 }
 
 export const userModel: IUserModel = persist(
   {
     users: [],
+    userById: computed(state => id =>
+      state.users.find(user => user.id === id) ?? { id: "", name: "" }
+    ),
     setUsers: action((state, name) => {
       state.users.push({ name, id: `user-${new Date().getTime()}` });
     }),
