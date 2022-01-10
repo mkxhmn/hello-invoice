@@ -20,7 +20,7 @@ interface ISetPayment {
   groupId: string;
 }
 
-interface IPayment extends Omit<ISetPayment, "groupId" | "expenseId"> {}
+export interface IPayment extends Omit<ISetPayment, "groupId" | "expenseId"> {}
 
 export interface IExpenseValue {
   id?: string;

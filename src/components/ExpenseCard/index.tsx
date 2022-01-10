@@ -1,8 +1,7 @@
 import { FunctionComponent, useMemo } from "react";
 import { IExpenseValue } from "../../store/model/expense";
 import dayjs from "dayjs";
-import { useStoreActions } from "../../store/hooks";
-import { IUserCard, UserCard } from "./UserCard";
+import { UserCard } from "./UserCard";
 
 export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
   const total = useMemo(
@@ -14,8 +13,6 @@ export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
     [expense.total]
   );
 
-  const getUser = useStoreActions(actions => actions.user.getUser);
-
   const date = useMemo<{ month: string; day: string }>(
     () => ({
       month: dayjs(expense.created).format("MMM"),
@@ -24,17 +21,10 @@ export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
     [expense.created]
   );
 
-  const users = useMemo<IUserCard[]>(
-    () =>
-      expense.users.map(userId => ({
-        ...getUser(userId),
-        expenseId: expense.id as string,
-        groupId: expense.groupId,
-        total: expense.total / expense.users.length,
-        payment: expense.payment
-      })),
-    [expense, getUser]
-  );
+  const totalPerUser = useMemo(() => expense.total / expense.users.length, [
+    expense.users,
+    expense.total
+  ]);
 
   return (
     <div
@@ -51,8 +41,15 @@ export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
           <div className="flex">{total}</div>
         </div>
         <div className="flex w-full flex-col">
-          {users.map(user => (
-            <UserCard {...user} key={user.id} />
+          {expense.users.map(id => (
+            <UserCard
+              key={id}
+              id={id}
+              expenseId={expense.id as string}
+              groupId={expense.groupId}
+              total={totalPerUser}
+              payment={expense.payment}
+            />
           ))}
         </div>
       </section>

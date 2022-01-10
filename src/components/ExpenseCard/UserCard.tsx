@@ -1,17 +1,18 @@
-import { IUser } from "../../store/model/user";
 import { useMemo } from "react";
-import { useStoreActions } from "../../store/hooks";
+import { useStoreActions, useStoreState } from "../../store/hooks";
 import { IPayment } from "../../store/model/expense";
 
-export interface IUserCard extends IUser {
+export interface IUserCard {
   total: number;
   groupId: string;
   expenseId: string;
   payment: IPayment[];
+  id: string;
 }
 
 export const UserCard = (user: IUserCard) => {
   const setPayment = useStoreActions(actions => actions.expense.setPayment);
+  const userById = useStoreState(state => state.user.userById(user.id));
 
   const total = useMemo(() => {
     const totalPaidByUser = user.payment
@@ -29,18 +30,12 @@ export const UserCard = (user: IUserCard) => {
   }, [user.payment, user.total, user.id]);
 
   const handleQuickPayment = () => {
-    const result = setPayment({
+    setPayment({
       expenseId: user.expenseId,
       groupId: user.groupId,
       userId: user.id,
       total: user.total
     });
-
-    console.log(
-      "👾 %c result ",
-      "background-color: #d73d32; color: white;",
-      result
-    );
   };
 
   return (
@@ -73,7 +68,9 @@ export const UserCard = (user: IUserCard) => {
             />
           </svg>
         </button>
-        <label className=" pl-2 text-gray-700 select-none">{user.name}</label>
+        <label className=" pl-2 text-gray-700 select-none">
+          {userById.name}
+        </label>
       </div>
       <div>{total}</div>
     </div>
