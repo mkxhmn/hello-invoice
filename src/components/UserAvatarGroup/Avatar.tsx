@@ -3,7 +3,10 @@ import { useMemo } from "react";
 
 export interface IAvatar {
   id: string;
+  index: number;
 }
+
+const palettes = ["#001219ff", "#0a9396ff", "#e63946"];
 
 export const Avatar = (props: IAvatar) => {
   const userById = useStoreState(state => state.user.userById(props.id));
@@ -19,8 +22,18 @@ export const Avatar = (props: IAvatar) => {
     [userById]
   );
 
+  const backgroundColor = useMemo(
+    () => palettes[props.index % palettes.length],
+    [props.index]
+  );
+
   return (
-    <div className="w-8 h-8 text-sm flex justify-center uppercase items-center -mr-2 border-2 border-white bg-gray-300 rounded-full">
+    <div
+      style={{
+        backgroundColor
+      }}
+      className="w-8 h-8 text-sm flex justify-center uppercase items-center -mr-2 border-2 border-white text-white rounded-full font-medium"
+    >
       {user}
     </div>
   );
