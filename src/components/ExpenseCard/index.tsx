@@ -2,16 +2,26 @@ import { FunctionComponent, useMemo } from "react";
 import { IExpenseValue } from "../../store/model/expense";
 import dayjs from "dayjs";
 import { UserCard } from "./UserCard";
+import { useConvertToCurrency } from "../../utility/useConvertToCurrency";
 
 export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
-  const total = useMemo(
+  const total = useConvertToCurrency(expense.total);
+
+  const totalPaid = useMemo(
     () =>
-      new Intl.NumberFormat("ms-MY", {
-        style: "currency",
-        currency: "MYR"
-      }).format(expense.total),
-    [expense.total]
+      expense.payment.reduce(
+        (totalPayment, pay) => pay.total + totalPayment,
+        0
+      ),
+    [expense.payment]
   );
+
+  const isSettle = useMemo(() => totalPaid >= expense.total, [
+    totalPaid,
+    expense.total
+  ]);
+
+  const totalPaidToCurrency = useConvertToCurrency(totalPaid);
 
   const date = useMemo<{ month: string; day: string }>(
     () => ({
@@ -28,7 +38,9 @@ export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
 
   return (
     <div
-      className=" grid grid-cols-12 gap-4 py-6 px-4 rounded-lg shadow-md "
+      className={` grid grid-cols-12 gap-4 py-6 px-4 rounded-lg shadow-md ${
+        isSettle ? "opacity-50" : ""
+      }`}
       key={expense.id}
     >
       <section className="col col-span-1">
@@ -38,7 +50,14 @@ export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
       <section className="col col-start-2 col-end-13">
         <div className="flex w-full justify-between text-xl font-extrabold text-gray-800">
           <div className="flex">{expense.name}</div>
-          <div className="flex">{total}</div>
+          <div className="flex flex-col">
+            <div className="flex">{total}</div>
+            {Boolean(totalPaid) && (
+              <div className="flex text-sm w-full font-bold justify-end text-green-500">
+                + {totalPaidToCurrency}
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex w-full flex-col">
           {expense.users.map(id => (
