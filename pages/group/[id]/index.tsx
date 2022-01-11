@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import confetti from "canvas-confetti";
 import { useStoreState } from "../../../src/store/hooks";
 import { ExpenseCard } from "../../../src/components/ExpenseCard";
+import { UserAvatarGroup } from "../../../src/components/UserAvatarGroup";
 
 const GroupId = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const GroupId = () => {
 
   return (
     <Container>
-      <section className="mt-20 mb-8 items-center justify-between flex">
+      <section className="mt-20 items-center justify-between flex">
         <h1 className="text-2xl font-extrabold text-gray-800 md:max-w-4xl sm:text-3xl">
           {groupById.name}
         </h1>
@@ -55,6 +56,7 @@ const GroupId = () => {
           </button>
         </div>
       </section>
+      <UserAvatarGroup users={groupById.users} />
       <section className="grid gap-4">
         {expenseByGroupId.map(expense => (
           <ExpenseCard
