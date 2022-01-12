@@ -1,6 +1,6 @@
 import { Avatar } from "./Avatar";
 
-interface IUserAvatarGroup {
+export interface IUserAvatarGroup {
   users: string[];
 }
 

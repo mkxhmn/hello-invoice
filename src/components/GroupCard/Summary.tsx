@@ -2,8 +2,13 @@ import { IGroup } from "../../store/model/group";
 import { useRouter } from "next/router";
 import { useStoreState } from "../../store/hooks";
 import { useMemo } from "react";
-import { UserAvatarGroup } from "../UserAvatarGroup";
 import { TotalSummary } from "./TotalSummary";
+import dynamic from "next/dynamic";
+import { IUserAvatarGroup } from "../UserAvatarGroup";
+
+const UserAvatarGroup = dynamic<IUserAvatarGroup>(() =>
+  import("../UserAvatarGroup").then(mod => mod.UserAvatarGroup)
+);
 
 export const Summary = (group: IGroup) => {
   const router = useRouter();
