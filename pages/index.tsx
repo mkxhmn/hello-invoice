@@ -1,6 +1,7 @@
 import { Container } from "../src/components/Container";
 import { useRouter } from "next/router";
 import { GroupCard } from "../src/components/GroupCard";
+import { Title } from "../src/components/Title";
 
 const LandingPage = () => {
   const router = useRouter();
@@ -11,9 +12,7 @@ const LandingPage = () => {
 
   return (
     <Container>
-      <h1 className="mt-20 mb-8 text-2xl font-extrabold text-gray-800 md:max-w-4xl sm:text-3xl">
-        Hello Invoice
-      </h1>
+      <Title>Hello Invoice</Title>
       <button
         onClick={handleCreateGroup}
         className="text-gray-400 bg-opacity-50 shadow-md rounded-xl p-2 backdrop-filter backdrop-blur firefox:bg-opacity-90"

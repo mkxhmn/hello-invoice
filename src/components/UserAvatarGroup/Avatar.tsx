@@ -6,7 +6,13 @@ export interface IAvatar {
   index: number;
 }
 
-const palettes = ["#001219ff", "#0a9396ff", "#e63946"];
+const palettes = [
+  "#001219ff",
+  "#0a9396ff",
+  "#e63946",
+  "#ee9b00ff",
+  "#ff4d6dff"
+];
 
 export const Avatar = (props: IAvatar) => {
   const userById = useStoreState(state => state.user.userById(props.id));
