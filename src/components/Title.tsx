@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 
 export const Title: FunctionComponent = ({ children }) => (
   <motion.h1
-    initial={{ opacity: 0.2, marginLeft: "-1rem" }}
+    initial={{ opacity: 0.2, y: 12 }}
     animate={{
       opacity: 1,
-      marginLeft: 0
+      y: 0
     }}
     transition={{
       type: "spring",
