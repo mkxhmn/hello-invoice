@@ -1,5 +1,6 @@
 import { Container } from "../src/components/Container";
 import { useRouter } from "next/router";
+import { GroupCard } from "../src/components/GroupCard";
 
 const LandingPage = () => {
   const router = useRouter();
@@ -32,6 +33,7 @@ const LandingPage = () => {
           />
         </svg>
       </button>
+      <GroupCard />
     </Container>
   );
 };
