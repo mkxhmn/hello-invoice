@@ -20,6 +20,20 @@ export const Summary = (group: IGroup) => {
     return expenseById?.reduce((total, expense) => total + expense.total, 0);
   }, [expenseById]);
 
+  const totalPaid = useMemo(
+    () =>
+      expenseById.reduce(
+        (total, expense) =>
+          total +
+          expense.payment.reduce(
+            (totalPayment, pay) => totalPayment + pay.total,
+            0
+          ),
+        0
+      ),
+    [expenseById]
+  );
+
   return (
     <div
       onClick={handleToGroup}
@@ -37,7 +51,7 @@ export const Summary = (group: IGroup) => {
         </h2>
       </section>
       <div className="grid grid-cols-2 mt-2">
-        <TotalSummary header={"Paid"} total={totalExpenses} />
+        <TotalSummary header={"Paid"} total={totalPaid} />
         <TotalSummary header={"Total"} total={totalExpenses} />
       </div>
     </div>
