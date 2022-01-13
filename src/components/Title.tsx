@@ -13,7 +13,7 @@ export const Title: FunctionComponent = ({ children }) => (
       stiffness: 420,
       damping: 20
     }}
-    className="mt-20 mb-8 text-2xl font-extrabold text-gray-800 md:max-w-4xl sm:text-3xl"
+    className="text-2xl font-extrabold text-gray-800 md:max-w-4xl sm:text-3xl"
   >
     {children}
   </motion.h1>

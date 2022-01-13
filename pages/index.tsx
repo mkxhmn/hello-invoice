@@ -13,8 +13,10 @@ const LandingPage = () => {
 
   return (
     <Container>
-      <Title>Hello Invoice</Title>
-      <Add onClick={handleCreateGroup} />
+      <div className="mt-20 mb-8 flex justify-between">
+        <Title>Hello Invoice</Title>
+        <Add onClick={handleCreateGroup} />
+      </div>
       <GroupCard />
     </Container>
   );
