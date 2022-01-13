@@ -8,6 +8,8 @@ import { Title } from "../../../src/components/Title";
 import { Add } from "../../../src/components/IconButton/Add";
 import dynamic from "next/dynamic";
 import { IExpenseValue } from "../../../src/store/model/expense";
+import { CARD, CONTAINER } from "../../../src/animation";
+import { motion } from "framer-motion";
 
 const UserAvatarGroup = dynamic<IUserAvatarGroup>(
   () =>
@@ -58,15 +60,18 @@ const GroupId = () => {
         </div>
         <UserAvatarGroup users={groupById.users} />
       </section>
-      <section className="grid gap-4">
+      <motion.section
+        variants={CONTAINER}
+        initial="hidden"
+        animate="visible"
+        className="grid gap-4"
+      >
         {expenseByGroupId.map(expense => (
-          <ExpenseCard
-            {...expense}
-            groupId={router.query.id as string}
-            key={expense.id}
-          />
+          <motion.div key={expense.id} variants={CARD}>
+            <ExpenseCard {...expense} groupId={router.query.id as string} />
+          </motion.div>
         ))}
-      </section>
+      </motion.section>
     </Container>
   );
 };
