@@ -1,14 +1,19 @@
 import { useFormik } from "formik";
 import { ChangeEvent, FunctionComponent } from "react";
-import { UserSelection } from "./UserSelection";
 import { IGroup } from "../../store/model/group";
-import { useStoreActions } from "../../store/hooks";
+import { useStoreActions, useStoreState } from "../../store/hooks";
 import { schema } from "./group-schema";
 import { useRouter } from "next/router";
+import { TextField } from "../../components/TextField";
+import { Button } from "../../components/Button";
+import { AutoComplete } from "../../components/AutoComplete";
+import { IUser } from "../../store/model/user";
 
 export const GroupForm: FunctionComponent = () => {
   const setGroups = useStoreActions(actions => actions.group.setGroups);
   const router = useRouter();
+
+  const users = useStoreState(state => state.user.users);
 
   const formik = useFormik<Omit<IGroup, "id">>({
     initialValues: {
@@ -41,37 +46,28 @@ export const GroupForm: FunctionComponent = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <section className="mb-4" aria-details="group name section">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-1"
-          htmlFor="name"
-        >
-          Name
-        </label>
-        <input
-          className="w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm"
-          id="name"
-          type="text"
-          placeholder="Name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-        />
-        {formik.errors.name && (
-          <span className="text-sm text-red-400">{formik.errors.name}</span>
-        )}
-      </section>
+      <TextField
+        label="Name"
+        id="name"
+        type="text"
+        placeholder="Name"
+        value={formik.values.name}
+        onChange={formik.handleChange}
+        errors={formik.errors.name}
+      />
       <section aria-details="user selection section">
-        <UserSelection users={formik.values.users} handleUser={handleUser} />
-        {formik.errors.users && (
-          <span className="text-sm text-red-400">{formik.errors.users}</span>
-        )}
+        <AutoComplete
+          options={users as IUser[]}
+          onChange={handleUser}
+          label={"Participant"}
+          id="users"
+          placeholder="Participants"
+          getOptionLabel={option => option.name}
+          getOptionValue={option => option.id}
+          errors={formik.errors.users as string}
+        />
       </section>
-      <button
-        type="submit"
-        className="bg-indigo-400 text-indigo-900 py-2 px-4 rounded-lg shadow-md"
-      >
-        Create Group
-      </button>
+      <Button type="submit">Create Group</Button>
     </form>
   );
 };
