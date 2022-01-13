@@ -3,10 +3,29 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import confetti from "canvas-confetti";
 import { useStoreState } from "../../../src/store/hooks";
-import { ExpenseCard } from "../../../src/components/ExpenseCard";
-import { UserAvatarGroup } from "../../../src/components/UserAvatarGroup";
+import { IUserAvatarGroup } from "../../../src/components/UserAvatarGroup";
 import { Title } from "../../../src/components/Title";
 import { Add } from "../../../src/components/IconButton/Add";
+import dynamic from "next/dynamic";
+import { IExpenseValue } from "../../../src/store/model/expense";
+
+const UserAvatarGroup = dynamic<IUserAvatarGroup>(
+  () =>
+    import("../../../src/components/UserAvatarGroup").then(
+      mod => mod.UserAvatarGroup
+    ),
+  {
+    ssr: false
+  }
+);
+
+const ExpenseCard = dynamic<IExpenseValue>(
+  () =>
+    import("../../../src/components/ExpenseCard").then(mod => mod.ExpenseCard),
+  {
+    ssr: false
+  }
+);
 
 const GroupId = () => {
   const router = useRouter();

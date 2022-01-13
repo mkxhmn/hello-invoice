@@ -1,8 +1,22 @@
 import { FunctionComponent, useMemo } from "react";
 import { IExpenseValue } from "../../store/model/expense";
 import dayjs from "dayjs";
-import { UserCard } from "./UserCard";
+import { IUserCard } from "./UserCard";
 import { useConvertToCurrency } from "../../utility/useConvertToCurrency";
+import dynamic from "next/dynamic";
+
+const UserCard = dynamic<IUserCard>(
+  () => import("./UserCard").then(mod => mod.UserCard),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex flex-row mt-1">
+        <div className="h-4 w-4 mr-2 rounded-full bg-gray-200 animate-pulse" />
+        <div className="animate-pulse w-1/4 h-4 bg-gray-200 rounded-md" />
+      </div>
+    )
+  }
+);
 
 export const ExpenseCard: FunctionComponent<IExpenseValue> = expense => {
   const total = useConvertToCurrency(expense.total);
